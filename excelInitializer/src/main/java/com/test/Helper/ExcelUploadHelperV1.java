@@ -47,7 +47,7 @@ public class ExcelUploadHelperV1 {
 					case 2 -> customer.setUsername(cell.getStringCellValue());
 					case 3 -> customer.setEmail(cell.getStringCellValue());
 					case 4 -> customer.setPassword(cell.getStringCellValue());
-					case 5 -> customer.setAddress(cell.getStringCellValue());
+//					case 5 -> customer.setAddress(cell.getStringCellValue());
 					case 6 -> customer.setRoles(cell.getStringCellValue());
 					case 7 -> customer.setEnabled(cell.getBooleanCellValue());
 					default -> {}

@@ -1,5 +1,6 @@
 package com.test.entity;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customers1")
 public class Customer {
 
 	@Id
@@ -17,7 +18,8 @@ public class Customer {
 	private String username;
 	private String email;
 	private String password;
-	private String address;
+	@Embedded
+	private Address address;
 	private String roles;
 	private Boolean enabled;
 
@@ -63,11 +65,11 @@ public class Customer {
 		this.password = password;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 
@@ -92,7 +94,7 @@ public class Customer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(Integer id, String username, String email, String password, String address, String name,
+	public Customer(Integer id, String username, String email, String password, Address address, String name,
 			String roles, Boolean enabled) {
 		super();
 		this.id = id;
