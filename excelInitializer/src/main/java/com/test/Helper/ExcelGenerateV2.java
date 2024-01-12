@@ -68,7 +68,7 @@ public class ExcelGenerateV2<T> {
 
 		int index = 0;
 		for (Field header : fields) {
-			createCell(row, index++, header.getName(), style);
+			createCell(row, index++, header.getName().toUpperCase(), style);
 		}
 
 	}

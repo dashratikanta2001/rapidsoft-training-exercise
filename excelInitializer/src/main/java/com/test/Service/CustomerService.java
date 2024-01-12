@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.Dao.CustomerDao;
+import com.test.Dao.CustomerDao1;
 import com.test.Helper.ExcelGenerateV1;
 import com.test.Helper.ExcelGenerateV2;
 import com.test.Helper.ExcelGenerateV3;
 import com.test.Helper.ExcelUploadHelperV1;
 import com.test.entity.Customer;
+import com.test.entity.Customer1;
 import com.test.entity.Student;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +25,9 @@ public class CustomerService {
 
 	@Autowired
 	private CustomerDao customerDao;
+	
+	@Autowired
+	private CustomerDao1 customerDao1;
 
 	public List<Customer> GenerateExcelV1(HttpServletResponse response) throws IOException {
 		List<Customer> customersList = customerDao.findAll();
@@ -71,8 +76,10 @@ public class CustomerService {
 		if (customersList.isEmpty()) {
 			customersList.add(new Customer());
 			ExcelGenerateV3 excelGenerate = new ExcelGenerateV3(customersList);
+			System.out.println("is empty");
 
 		} else {
+			System.out.println("is not empty");
 			ExcelGenerateV3 excelGenerate = new ExcelGenerateV3(customersList);
 
 			Student student = new Student();
@@ -83,7 +90,7 @@ public class CustomerService {
 //		excelGenerateV2.exportDataToExcel(response);
 
 //		System.out.println("-----------------------------");
-//			excelGenerate.exportDataToExcel(response);
+			excelGenerate.exportDataToExcel(response);
 		}
 		return customersList;
 	}
@@ -126,10 +133,10 @@ public class CustomerService {
 		return customerDao.findAll();
 	}
 
-	public List<Customer> saveCustomerJsonToDbV1(List<Customer> customers) {
+	public List<Customer1> saveCustomerJsonToDbV1(List<Customer1> customers) {
 		// TODO Auto-generated method stub
 
-		List<Customer> customer2 = customerDao.saveAll(customers);
+		List<Customer1> customer2 = customerDao1.saveAll(customers);
 
 		return customer2;
 	}

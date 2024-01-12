@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.test.Service.CustomerService;
 import com.test.entity.Customer;
+import com.test.entity.Customer1;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -45,7 +46,7 @@ public class TestController {
 //		
 		try {
 //			customerService.GenerateExcelV1(response);
-			customerService.GenerateExcelV3(response);
+			customerService.GenerateExcelV2(response);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -65,14 +66,13 @@ public class TestController {
 	}
 	
 	@PostMapping("/upload-json-data")
-	public ResponseEntity<?> postMethodName(@RequestBody List<Customer> customer) {
+	public ResponseEntity<?> postMethodName(@RequestBody List<Customer1> customer) {
 		//TODO: process POST request
 		
-		List<Customer> customer2 =customerService.saveCustomerJsonToDbV1(customer);
+		List<Customer1> customer2 =customerService.saveCustomerJsonToDbV1(customer);
 		
 		return ResponseEntity.ok(customer2);
 	}
-	
 	
 	
 	@GetMapping
