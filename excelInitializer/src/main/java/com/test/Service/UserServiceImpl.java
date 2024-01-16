@@ -123,6 +123,9 @@ public class UserServiceImpl implements UserService {
 		if (customer == null) {
 			throw new RuntimeException("Invalid Email id");
 		}
+		else if (customer.isVarified()) {
+			throw new RuntimeException("User already verified. So otp can't be resend.");
+		}
 		else if (new Date(customer.getOtpTimer()+(1*60*1000)).after(new Date(System.currentTimeMillis()))) {
 			throw new RuntimeException("Please wait for 1 minute to resend the otp.");
 		}
