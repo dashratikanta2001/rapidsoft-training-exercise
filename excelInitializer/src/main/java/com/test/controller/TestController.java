@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,8 @@ public class TestController {
 //	{
 //		return ResponseEntity.ok().body("Welcome");
 //	}
+	
+	Logger logger = LoggerFactory.getLogger(TestController.class);
 	
 	@GetMapping("generate-excel")
 	public ResponseEntity<?> generateExcel(HttpServletResponse response)
@@ -64,7 +68,7 @@ public class TestController {
 		
 		return ResponseEntity.ok(Map.of("Message", "Customers data uploaded and saved to database successfully."));
 	}
-	
+	 
 	@PostMapping("/upload-json-data")
 	public ResponseEntity<?> postMethodName(@RequestBody List<Customer1> customer) {
 		//TODO: process POST request
@@ -77,7 +81,8 @@ public class TestController {
 	
 	@GetMapping
 	public ResponseEntity<?> getAllCustomers() {
-		
+//		logger.trace("FATAL_ERROR");
+		logger.error("FETAL_ERROR");
 //		customerService.getCustomers();
 		return new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
 //		return ResponseEntity.ok(customerService.getCustomers());
