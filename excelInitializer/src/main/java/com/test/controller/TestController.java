@@ -36,7 +36,7 @@ public class TestController {
 //		return ResponseEntity.ok().body("Welcome");
 //	}
 	
-	Logger logger = LoggerFactory.getLogger(TestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 	
 	@GetMapping("generate-excel")
 	public ResponseEntity<?> generateExcel(HttpServletResponse response)
@@ -66,7 +66,7 @@ public class TestController {
 	{
 		customerService.saveCustomersToDatabaseV1(file);
 		
-		return ResponseEntity.ok(Map.of("Message", "Customers data uploaded and saved to database successfully."));
+		return ResponseEntity.ok("");
 	}
 	 
 	@PostMapping("/upload-json-data")
@@ -81,8 +81,8 @@ public class TestController {
 	
 	@GetMapping
 	public ResponseEntity<?> getAllCustomers() {
-//		logger.trace("FATAL_ERROR");
-		logger.error("FETAL_ERROR");
+		logger.error("FATAL_ERROR");
+//		logger.error("FETAL_ERROR");
 //		customerService.getCustomers();
 		return new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
 //		return ResponseEntity.ok(customerService.getCustomers());
