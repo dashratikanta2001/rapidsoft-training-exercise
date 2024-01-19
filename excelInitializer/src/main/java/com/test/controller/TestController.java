@@ -81,11 +81,8 @@ public class TestController {
 	
 	@GetMapping
 	public ResponseEntity<?> getAllCustomers() {
-		logger.error("FATAL_ERROR");
-//		logger.error("FETAL_ERROR");
-//		customerService.getCustomers();
+//		int i=10/0;
 		return new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
-//		return ResponseEntity.ok(customerService.getCustomers());
 	}
 	
 }

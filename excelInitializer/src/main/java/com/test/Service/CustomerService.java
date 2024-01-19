@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.Dao.CustomerDao;
 import com.test.Dao.CustomerDao1;
+import com.test.Dto.PaginationRequestDto;
+import com.test.Dto.PaginationResponseDto;
 import com.test.Helper.ExcelGenerateV1;
 import com.test.Helper.ExcelGenerateV2;
 import com.test.Helper.ExcelGenerateV3;
@@ -17,6 +20,7 @@ import com.test.Helper.ExcelUploadHelperV1;
 import com.test.entity.Customer;
 import com.test.entity.Customer1;
 import com.test.entity.Student;
+import com.test.response.CustomResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -129,8 +133,11 @@ public class CustomerService {
 		}
 	}
 
-	public List<Customer> getCustomers() {
-		return customerDao.findAll();
+	public CustomResponse<?> getCustomers() {
+		
+		return new CustomResponse("Customer Found", customerDao.findAll(), HttpStatus.OK.value());
+		
+//		return customerDao.findAll();
 	}
 
 	public List<Customer1> saveCustomerJsonToDbV1(List<Customer1> customers) {
@@ -139,6 +146,18 @@ public class CustomerService {
 		List<Customer1> customer2 = customerDao1.saveAll(customers);
 
 		return customer2;
+	}
+
+	public PaginationResponseDto<?> getCustomersByPagination(PaginationRequestDto requestDto) {
+		// TODO Auto-generated method stub
+		
+		if (requestDto.getPage()<0 || requestDto.getSize()<0) {
+			throw new RuntimeException("page number or size can't be less than 0");
+		}
+		
+//		customerDao.findCustomers(requestDto.getPage(), requestDto.getSize(), requestDto.getSortOrder());
+		
+		return null;
 	}
 
 }
