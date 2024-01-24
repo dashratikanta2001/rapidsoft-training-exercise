@@ -134,4 +134,10 @@ public class UserServiceImpl implements UserService {
 		userDao.save(user);
 	}
 
+	@Override
+	public boolean checkIfValidOldPassword(User user, String oldPassword) {
+		// TODO Auto-generated method stub
+		return passwordEncoder.matches(oldPassword, user.getPassword());
+	}
+
 }

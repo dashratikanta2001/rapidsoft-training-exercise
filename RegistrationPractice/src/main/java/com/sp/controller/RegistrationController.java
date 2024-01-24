@@ -107,6 +107,22 @@ public class RegistrationController {
 	}
 	
 	
+	@PostMapping("/changePassword")
+	public String changePassword(@RequestBody PasswordDto passwordDto)
+	{
+		User user = userService.findUserByEmail(passwordDto.getEmail());
+		if (!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())) {
+			return "Invalid old Password";
+		}
+		
+		//save New Password;
+		
+		userService.changePassword(user, passwordDto.getNewPassword());
+		
+		return "Password changed successfully";
+	}
+	
+	
 
 	private String passwordResetTokenMail(User user, String applicationUrl, String token) {
 		String url =applicationUrl+"/savePassword?token="+token;
