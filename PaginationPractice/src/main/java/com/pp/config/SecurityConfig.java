@@ -16,7 +16,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.cors(cors -> cors.disable())
 		.authorizeRequests(auth -> 
 		{
-			auth.anyRequest().authenticated();
+			auth.anyRequest().permitAll();
 		})
 		.sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
