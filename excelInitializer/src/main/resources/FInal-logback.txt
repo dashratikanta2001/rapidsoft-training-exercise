@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+
+	<include
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+	<property name="LOGS" value="/home/rapidsoft/Desktop/LogInfo/newLog" />
+
+	<appender name="Console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%yellow(%d{yyyy-MM-dd HH:mm:ss}) %blue([%thread]) %highlight(%-1level) %cyan(%logger{36})-%msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="RollingFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS}/ratlam-logs.log</file>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>${FILE_LOG_PATTERN}</Pattern>
+		</encoder>
+	
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily and when the file reaches 10 MegaBytes -->
+			<fileNamePattern>${LOGS}/archived/Ratlam-logs-%d{yyyy-MM-dd}.%i.log.zip
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>15MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<appender name="RollingFileError"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter"> 
+            <level>ERROR</level>
+        </filter>
+		<file>${LOGS}/error/ratlam-logs-error.log</file>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>${FILE_LOG_PATTERN}</Pattern>
+		</encoder>
+  
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily and when the file reaches 10 MegaBytes -->
+			<fileNamePattern>${LOGS}/error/archived/Ratlam-logs-error%d{yyyy-MM-dd}.%i.log.zip
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>15MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<!-- LOG everything at ERROR level -->
+	<root level="error">
+		<appender-ref ref="RollingFile" /> 
+		<appender-ref ref="Console" />
+		<appender-ref ref="RollingFileError"/>
+	</root>
+	
+	<!-- LOG everything at WARN level -->
+	<!-- <root level="warn">
+		<appender-ref ref="RollingFile" />
+		<appender-ref ref="Console" />
+	</root> -->
+	<!-- LOG everything at INFO level -->
+	<root level="info">
+		<appender-ref ref="RollingFile" />
+		<appender-ref ref="Console" />
+		<!-- <appender-ref ref="RollingFileError"/> -->
+	</root> 
+
+	<!-- LOG "erp.workorder.controller*" at TRACE level -->
+	<logger name="com.test.controller" level="trace"
+		additivity="false">
+		<appender-ref ref="RollingFile" />
+		<appender-ref ref="Console" />
+		<appender-ref ref="RollingFileError"/>
+	</logger>
+
+</configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

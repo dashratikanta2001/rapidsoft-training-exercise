@@ -1,8 +1,0 @@
-191066 [RMI TCP Connection(5)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - -Application shutdown requested.
-191072 [RMI TCP Connection(5)-127.0.0.1] INFO  o.a.coyote.http11.Http11NioProtocol - -Pausing ProtocolHandler ["http-nio-8080"]
-191072 [RMI TCP Connection(5)-127.0.0.1] INFO  o.a.catalina.core.StandardService - -Stopping service [Tomcat]
-191073 [RMI TCP Connection(5)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - -Destroying Spring FrameworkServlet 'dispatcherServlet'
-191075 [RMI TCP Connection(5)-127.0.0.1] INFO  o.a.coyote.http11.Http11NioProtocol - -Stopping ProtocolHandler ["http-nio-8080"]
-191080 [RMI TCP Connection(5)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - -Closing JPA EntityManagerFactory for persistence unit 'default'
-191083 [RMI TCP Connection(5)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - -HikariPool-1 - Shutdown initiated...
-191089 [RMI TCP Connection(5)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - -HikariPool-1 - Shutdown completed.
