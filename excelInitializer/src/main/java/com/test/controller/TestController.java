@@ -1,6 +1,7 @@
 package com.test.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,12 +60,12 @@ public class TestController {
 		return ResponseEntity.ok().body("Hello");
 	}
 	
-	@PostMapping("/upload-customers-data")
-	public ResponseEntity<?> uploadCustomerData(@RequestParam("file") MultipartFile file)
+	@PostMapping("upload-customers-data")
+	public ResponseEntity<?> uploadCustomerData(@ModelAttribute("file") MultipartFile file)
 	{
 		customerService.saveCustomersToDatabaseV1(file);
 		
-		return ResponseEntity.ok("");
+		return ResponseEntity.ok("Data Uploaded successfully");
 	}
 	 
 	@PostMapping("/upload-json-data")
@@ -77,9 +78,8 @@ public class TestController {
 	}
 	
 	
-	@GetMapping
+	@PostMapping
 	public ResponseEntity<?> getAllCustomers() {
-//		int i=10/0;
 		return new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
 	}
 	

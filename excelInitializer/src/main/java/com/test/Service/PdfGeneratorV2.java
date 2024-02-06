@@ -19,6 +19,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfShading;
 import com.lowagie.text.pdf.PdfShadingPattern;
 import com.lowagie.text.pdf.PdfStamper;
+import com.test.entity.Customer;
 
 public class PdfGeneratorV2 {
 
@@ -151,15 +152,6 @@ public class PdfGeneratorV2 {
 			content.lineTo(60 + lineWidth, 150 - lineHeight);
 			content.stroke();
 			content.endText();
-
-//			content.beginText();
-
-//			Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE);
-//			headerFont.setColor(Color.black);
-//			headerFont.setSize(14);
-//			content.setFontAndSize(headerFont.getBaseFont(), headerFont.getSize());
-//			content.setColorFill(headerFont.getColor());
-			// Create fonts with different sizes and styles
 			Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
 			Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.BLACK);
 
@@ -174,36 +166,18 @@ public class PdfGeneratorV2 {
 
 			for (Entry<String, Object> entry : headerAndvalue.entrySet()) {
 
-
 				writeHeaderAndValue(content, entry.getKey(), entry.getValue(), x, y, headerFont, valueFont);
 				y -= 20;
 			}
 
-
 			Image image = null;
 			try {
-				image = Image.getInstance(getClass().getClassLoader().getResource("otsoe.jpg"));
-				System.out.println("Image is here");
+				image = Image.getInstance(getClass().getClassLoader().getResource("images (1).jpeg"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			image.setAbsolutePosition(71, 275);
-			image.scaleAbsolute(121, 80);
-			
-			
-			//Make the image to circular
-            PdfShading shading = PdfShading.simpleAxial(
-                    content.getPdfWriter(),
-                    x, y + 121 / 2,
-                    x + 80, y + 121 / 2,
-                    new Color(0, 0, 0, 0), new Color(0, 0, 0, 1));
 
-            PdfShadingPattern pattern = new PdfShadingPattern(shading);
-            content.setShadingFill(pattern);
-            content.circle(x + 80 / 2, y + 121 / 2, 80 / 2);
-            content.clip();
-            content.newPath();
-			content.addImage(image);
+			addCircularImage(content, image, 71, 255, 121, 80);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -211,6 +185,27 @@ public class PdfGeneratorV2 {
 		return new ByteArrayInputStream(baos.toByteArray());
 	}
 
+	private void addCircularImage(PdfContentByte content, Image image, float x, float y, float width1, float height1) {
+		// TODO Auto-generated method stub
+		float maxSize = 110;
+		float scaleFactor = Math.min(maxSize / image.getWidth(), maxSize / image.getHeight());
+		float width = image.getWidth() * scaleFactor;
+		float height = image.getHeight() * scaleFactor;
+
+		image.setAbsolutePosition(x, y);
+		image.scaleAbsolute(121.5f, 121.5f);
+
+		PdfShading shading = PdfShading.simpleAxial(content.getPdfWriter(), x, y + height / 2, x + height,
+				y + height / 2, new Color(0, 0, 0, 0), new Color(0, 0, 0, 1));
+
+		PdfShadingPattern pattern = new PdfShadingPattern(shading);
+		content.setShadingFill(pattern);
+		content.circle(131.5f, 316.25f, 60);
+		content.clip();
+		content.newPath();
+		content.addImage(image);
+
+	}
 
 	private float writeHeaderAndValue(PdfContentByte content, String header, Object value, float x, float y,
 			Font headerFont, Font valueFont) throws DocumentException {
@@ -225,12 +220,10 @@ public class PdfGeneratorV2 {
 		content.setFontAndSize(valueFont.getBaseFont(), valueFont.getSize());
 		content.showTextAligned(Element.ALIGN_LEFT, " :   " + value, x + 40, y, 0);
 
-		// Move to the next line
-//	        y -= 20;
-
 		content.endText();
 
 		return y;
 	}
+
 
 }

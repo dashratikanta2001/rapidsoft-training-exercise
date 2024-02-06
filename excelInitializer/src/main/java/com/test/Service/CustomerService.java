@@ -165,6 +165,9 @@ public class CustomerService {
 				throw new IllegalArgumentException("The file is not a valid excel file");
 			}
 		}
+		else {
+			throw new RuntimeException("Invalid Excel format file");
+		}
 	}
 
 	public CustomResponse<?> getCustomers() {
