@@ -13,6 +13,8 @@ import com.test.Dto.UserDto;
 import com.test.util.ExcelOperation;
 import com.test.util.ExcelOperation2;
 import com.test.util.ExcelOperationImpl;
+import com.test.util.ExcelTest;
+import com.test.util.FormatingCellColor;
 
 @RestController
 @RequestMapping("/excel")
@@ -20,10 +22,17 @@ public class ExcelControllerV4 {
 
 	@Autowired
 	private ExcelOperation excelOperation;
-	
+
 	@Autowired
 	private ExcelOperation2 excelOperation2;
-	private int i=1;
+
+	@Autowired
+	private FormatingCellColor excelCellColor;
+
+	@Autowired
+	private ExcelTest excelTest;
+
+	private int i = 1;
 
 	@GetMapping()
 	public ResponseEntity<?> showExcel() throws Exception {
@@ -46,9 +55,36 @@ public class ExcelControllerV4 {
 	public ResponseEntity<?> showExcel3() throws Exception {
 		return ResponseEntity.ok(excelOperation.readData(new TestDto(), "/home/rapidsoft/Desktop/excel/test.xlsx"));
 	}
+
 	@GetMapping("/write")
 	public ResponseEntity<?> writeExcel1() throws Exception {
-		return ResponseEntity.ok(excelOperation2.writeFormulaData(new TestDto(), "/home/rapidsoft/Desktop/excel/test"+i +".xlsx"));
+		return ResponseEntity.ok(
+				excelOperation2.writeFormulaData(new TestDto(), "/home/rapidsoft/Desktop/excel/test" + i + ".xlsx"));
+	}
+
+	@GetMapping("/write/color")
+	public ResponseEntity<?> writeExcelCellColor() throws Exception {
+		return ResponseEntity.ok(excelCellColor.formatExcelCellColor());
+	}
+
+	@GetMapping("/write/fromHashMap")
+	public ResponseEntity<?> writeExcelCellFromHashMap() throws Exception {
+		return ResponseEntity.ok(excelCellColor.hashMapToExcel());
+	}
+
+	@GetMapping("/write/dateFormat")
+	public ResponseEntity<?> writeExcelCellToDateFormats() throws Exception {
+		return ResponseEntity.ok(excelCellColor.workingWithDateCells());
+	}
+
+	@GetMapping("/read/fromExcel")
+	public ResponseEntity<?> readExcelCellToHashMap() throws Exception {
+		return ResponseEntity.ok(excelCellColor.readDataToHashMap());
+	}
+
+	@GetMapping("/read/fromExcel1")
+	public ResponseEntity<?> readExcelCellToHashMap1() throws Exception {
+		return ResponseEntity.ok(excelTest.timeSheet());
 	}
 
 }
