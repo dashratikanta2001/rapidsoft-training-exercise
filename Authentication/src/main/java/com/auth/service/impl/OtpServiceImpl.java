@@ -1,0 +1,112 @@
+package com.auth.service.impl;
+
+import java.util.Date;
+import java.util.Random;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.auth.dao.OtpDao;
+import com.auth.dao.UserDao;
+import com.auth.dto.CustomResponse;
+import com.auth.entity.Otp;
+import com.auth.exception.ApiException;
+import com.auth.service.OtpService;
+import com.auth.util.EmailUtil;
+
+@Service
+@Transactional
+public class OtpServiceImpl implements OtpService {
+
+	private final Long OTP_VALIDTIME = 10L;
+
+	@Autowired
+	private OtpDao otpDao;
+
+	@Autowired
+	private UserDao userDao;
+
+	@Autowired
+	private EmailUtil emailUtil;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Override
+	public CustomResponse verifyOtp(String email, String otp) {
+
+		Otp user = otpDao.findOtpByUsername(email);
+		
+//		System.out.println("OTP timer = "+user.getCreatedOn().before(new Date(System.currentTimeMillis()-user.getValidTime() *60*1000)));
+		
+		if (user == null) {
+			return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Invalid Email id");
+		} else if (user.getIsVerified() && !user.getIsActive()) {
+			return new CustomResponse(HttpStatus.CONFLICT.value(), null, "Account already exist in this Email id");
+		}
+//		else if(new Date(user.getValidTime()+(10*60*1000)).before(new Date(System.currentTimeMillis())))
+		else if (!user.getCreatedOn().after(new Date(System.currentTimeMillis()-user.getValidTime() *60*1000))) {
+//			System.out.println("OTP timer = "+user.getCreatedOn().compareTo(new Date(System.currentTimeMillis()-10*60*1000)));
+			return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP expired.");
+		}
+//		else if(!otp.equals(user.getOtp()))
+		else if (!passwordEncoder.matches(otp, user.getOtp())) {
+			return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Invalid OTP");
+		}
+
+		user.setIsVerified(true);
+		user.setIsActive(false);
+		otpDao.saveOtp(user);
+
+		return new CustomResponse(HttpStatus.OK.value(), null, "OTP verified successfully.");
+	}
+
+	@Override
+	public CustomResponse sendOtp(String email) {
+		Otp user ;
+
+		user = otpDao.findOtpByUsername(email);
+		if (user != null) {
+			if (user.getIsVerified() && !user.getIsActive()) {
+				return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email already verified");
+			}
+//			else if (new Date(user.getOtpTimer()+(1*60*1000)).after(new Date(System.currentTimeMillis()))) {
+			else if (user.getCreatedOn().after(new Date(System.currentTimeMillis() - (1 * 60 * 1000)))) {
+				throw new ApiException("Please wait for 1 minute to resend the otp.");
+			}
+		}
+		else {
+			user = new Otp();
+		}
+
+		String generatedOTP = generateOTP();
+		user.setOtp(passwordEncoder.encode(generatedOTP));
+		user.setEmail(email);
+		user.setCreatedOn(new Date());
+		user.setValidTime(OTP_VALIDTIME);
+		user.setIsVerified(false);
+		user.setIsActive(true);
+		otpDao.saveOtp(user);
+		sendOtpVerificationEmail(user.getEmail(), generatedOTP);
+		return new CustomResponse(HttpStatus.OK.value(), null, "OTP sent successfully.");
+	}
+
+	private String generateOTP() {
+		Random random = new Random();
+		int otp = 100000 + random.nextInt(999999);
+		return String.valueOf(otp);
+	}
+
+	private void sendOtpVerificationEmail(String email, String otp) {
+		String subject = "Email Verification";
+		String body = EmailUtil.otpBody(otp);
+
+		emailUtil.sendEmail(email, subject, body);
+
+	}
+
+}

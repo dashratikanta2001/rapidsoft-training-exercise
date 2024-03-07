@@ -2,15 +2,15 @@ package com.auth.dto;
 
 public class CustomResponse {
 
-	private int status;
+	private Integer status;
 	private Object data;
 	private String message;
 
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -30,7 +30,7 @@ public class CustomResponse {
 		this.message = message;
 	}
 
-	public CustomResponse(int status, Object data, String message) {
+	public CustomResponse(Integer status, Object data, String message) {
 		super();
 		this.status = status;
 		this.data = data;

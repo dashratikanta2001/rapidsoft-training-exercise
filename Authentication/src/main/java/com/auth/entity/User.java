@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "user")
 public class User {
@@ -21,11 +20,11 @@ public class User {
 	private String password;
 	private Date createdOn;
 	private Date updatedOn;
-	private String profilePath;
-	private Boolean isActive;
-	private String otp;
-	private Long otpTimer;
-	private Boolean verified;
+//	private String profilePath;
+	private boolean isActive;
+//	private String otp;
+//	private Long otpTimer;
+//	private Boolean verified;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,53 +90,53 @@ public class User {
 		this.updatedOn = updatedOn;
 	}
 
-	@Column(name = "profile_path")
-	public String getProfilePath() {
-		return profilePath;
-	}
+//	@Column(name = "profile_path")
+//	public String getProfilePath() {
+//		return profilePath;
+//	}
+//
+//	public void setProfilePath(String profilePath) {
+//		this.profilePath = profilePath;
+//	}
 
-	public void setProfilePath(String profilePath) {
-		this.profilePath = profilePath;
-	}
-
-	@Column(name = "isActive")
-	public Boolean getIsActive() {
+	@Column(name = "isActive", columnDefinition = "boolean default false")
+	public boolean getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(Boolean isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
-	
-	@Column(name = "otp")
-	public String getOtp() {
-		return otp;
-	}
 
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
-
-	@Column(name = "valid_time")
-	public Long getOtpTimer() {
-		return otpTimer;
-	}
-
-	public void setOtpTimer(Long otpTimer) {
-		this.otpTimer = otpTimer;
-	}
-
-	@Column(name = "is_verified")
-	public Boolean getVerified() {
-		return verified;
-	}
-
-	public void setVerified(Boolean verified) {
-		this.verified = verified;
-	}
+//	@Column(name = "otp")
+//	public String getOtp() {
+//		return otp;
+//	}
+//
+//	public void setOtp(String otp) {
+//		this.otp = otp;
+//	}
+//
+//	@Column(name = "valid_time")
+//	public Long getOtpTimer() {
+//		return otpTimer;
+//	}
+//
+//	public void setOtpTimer(Long otpTimer) {
+//		this.otpTimer = otpTimer;
+//	}
+//
+//	@Column(name = "is_verified")
+//	public Boolean getVerified() {
+//		return verified;
+//	}
+//
+//	public void setVerified(Boolean verified) {
+//		this.verified = verified;
+//	}
 
 	public User(Long id, String name, Long mobileNo, String email, String password, Date createdOn, Date updatedOn,
-			String profilePath, Boolean isActive) {
+			Boolean isActive) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -146,11 +145,9 @@ public class User {
 		this.password = password;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
-		this.profilePath = profilePath;
+//		this.profilePath = profilePath;
 		this.isActive = isActive;
 	}
-	
-	
 
 	public User() {
 		super();

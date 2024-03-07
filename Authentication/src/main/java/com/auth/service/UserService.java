@@ -7,9 +7,9 @@ public interface UserService {
 
 	CustomResponse saveUser(SignupDto request);
 
-	CustomResponse verifyOtp(String email, String otp);
-
-	CustomResponse resendOtp(String email);
+//	CustomResponse verifyOtp(String email, String otp);
+//
+//	CustomResponse resendOtp(String email);
 	
 	
 }

@@ -8,6 +8,7 @@ public class SignupDto {
 	private String mobileNo;
 	private String email;
 	private String password;
+	private String otp;
 
 	@NotBlank(message = "Name can't be blank")
 	public String getName() {
@@ -45,12 +46,22 @@ public class SignupDto {
 		this.password = password;
 	}
 
-	public SignupDto(String name, String mobileNo, String email, String password) {
+	@NotBlank(message = "Otp can't be blank")
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public SignupDto(String name, String mobileNo, String email, String password, String otp) {
 		super();
 		this.name = name;
 		this.mobileNo = mobileNo;
 		this.email = email;
 		this.password = password;
+		this.otp = otp;
 	}
 
 	public SignupDto() {
