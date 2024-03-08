@@ -35,7 +35,7 @@ public class EmailUtil {
 		}
 	}
 	
-	public static String otpBody(String otp)
+	public static String otpBody(String email ,String otp)
 	{
 		return "<!DOCTYPE html>\n"
 				+ "<html lang=\"en\">\n"
@@ -71,6 +71,12 @@ public class EmailUtil {
 				+ "            border-radius: 8px;\n"
 				+ "            margin-bottom: 20px;\n"
 				+ "        }\n"
+				+ "			.username {\n"
+				+ "            color: #333;\n"
+				+ "            font-weight: bold;\n"
+				+ "            text-align: center;\n"
+				+ "            margin-bottom: 20px;\n"
+				+ "        }"
 				+ "        .otp {\n"
 				+ "            font-size: 36px;\n"
 				+ "            font-weight: bold;\n"
@@ -91,6 +97,7 @@ public class EmailUtil {
 				+ "            <h1>Email Verification OTP</h1>\n"
 				+ "        </div>\n"
 				+ "        <div class=\"content\">\n"
+				+ "			   <p>Hello <span class=\"username\">"+email+"</span>,</p>"
 				+ "            <p>Your one-time password (OTP) for email verification is:</p>\n"
 				+ "            <div class=\"otp\">\n"
 				+ "                <!-- Insert OTP dynamically here -->\n"

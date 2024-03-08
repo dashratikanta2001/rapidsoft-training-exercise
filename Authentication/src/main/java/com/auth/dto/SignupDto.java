@@ -1,6 +1,7 @@
 package com.auth.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class SignupDto {
 
@@ -38,6 +39,7 @@ public class SignupDto {
 	}
 
 	@NotBlank(message = "Password can't be blank")
+	@Size(min = 8, max = 16)
 	public String getPassword() {
 		return password;
 	}
@@ -47,6 +49,7 @@ public class SignupDto {
 	}
 
 	@NotBlank(message = "Otp can't be blank")
+	@Size(min = 6, max = 6, message = "OTP must be 6 digit")
 	public String getOtp() {
 		return otp;
 	}

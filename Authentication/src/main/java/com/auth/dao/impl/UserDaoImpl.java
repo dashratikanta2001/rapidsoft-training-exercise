@@ -1,5 +1,6 @@
 package com.auth.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -38,10 +39,14 @@ public class UserDaoImpl implements UserDao{
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<User> cq = cb.createQuery(User.class);
 		Root<User> root = cq.from(User.class);
-		Predicate predicate = cb.equal(root.get("email"), email);
-		cq.distinct(true).select(root).where(predicate);
+		List<Predicate> andPredicates = new ArrayList<>();
+		andPredicates.add(cb.equal(root.get("email"), email));
+		andPredicates.add(cb.equal(root.get("isActive"), true));
+		Predicate andPredicate = cb.and(andPredicates.toArray(new Predicate[] {}));
+		cq.distinct(true).select(root).where(cb.and(andPredicate));
 		Query<User> query = session.createQuery(cq);
 		List<User> resultList = query.getResultList();
+		System.out.println("email = "+resultList.size());
 		if(resultList != null && resultList.size() > 0)
 		{
 			return resultList.get(0);

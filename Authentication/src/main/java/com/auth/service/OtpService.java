@@ -6,5 +6,5 @@ public interface OtpService {
 
 	CustomResponse verifyOtp(String email, String otp);
 
-	CustomResponse sendOtp(String email);
+	CustomResponse sendOtp(String email, Boolean forgotOTP);
 }

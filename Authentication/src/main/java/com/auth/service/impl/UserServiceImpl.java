@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
 		user.setName(request.getName());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setCreatedOn(new Date());
+		user.setIsActive(true);
 		
 		user = userDao.saveUser(user);		
 		

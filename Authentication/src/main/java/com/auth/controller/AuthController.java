@@ -1,5 +1,8 @@
 package com.auth.controller;
 
+import static com.auth.util.RegexPattern.validEmailPattern;
+import static com.auth.util.RegexPattern.validPhoneNumberPattern;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ import com.auth.security.JwtTokenHelper;
 import com.auth.service.OtpService;
 import com.auth.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -47,6 +52,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<CustomResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
+		validEmailPattern(request.getUsername());
 		
 		this.authenticate(request.getUsername(), request.getPassword());
 
@@ -67,6 +73,8 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<CustomResponse> signup(@Valid @RequestBody SignupDto requestDto)
 	{
+		validEmailPattern(requestDto.getEmail());
+		validPhoneNumberPattern(requestDto.getMobileNo());
 		CustomResponse response = otpService.verifyOtp(requestDto.getEmail(), requestDto.getOtp());
 		if(response.getStatus().equals(HttpStatus.OK.value()))
 		{
@@ -85,9 +93,31 @@ public class AuthController {
 	
 	@PostMapping("/send-otp")
 	public ResponseEntity<CustomResponse> resendOtp(@RequestParam String email) {
-		CustomResponse response = otpService.sendOtp(email);
+		validEmailPattern(email);
+		CustomResponse response = otpService.sendOtp(email,false);
 		return ResponseEntity.ok(response);
 	}
+	
+	@PostMapping("/forgot-password/send-otp")
+	public ResponseEntity<?> checkEmailForForgotPassword(@RequestParam String email) {
+		
+		validEmailPattern(email);
+		CustomResponse response = otpService.sendOtp(email,true);
+		return ResponseEntity.ok(response);
+	}
+	
+	@ApiOperation(value = "Verify the otp for forgot password")
+	@PostMapping("/forgot-password/verify-otp")
+	public ResponseEntity<?> postMethodName(@RequestParam String email, @RequestParam String otp) {
+		
+		validEmailPattern(email);
+		CustomResponse response = otpService.verifyOtp(email, otp);
+		
+		response =new CustomResponse(HttpStatus.OK.value(), null, "Implement in future");
+		return ResponseEntity.ok(response);
+	}
+	
+	
 	
 	private void authenticate(String username, String password) throws Exception {
 		// TODO Auto-generated method stub
