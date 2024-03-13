@@ -62,7 +62,7 @@ public class GlobalException {
 	{
 		
 		String message = ex.getMessage();
-		CustomResponse response = new CustomResponse(HttpStatus.INTERNAL_SERVER_ERROR.value() ,null, message);
+		CustomResponse response = new CustomResponse(HttpStatus.INTERNAL_SERVER_ERROR.value() ,null,"Error processing the request! Caused by :"+ message);
 		ex.printStackTrace();
 		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

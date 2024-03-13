@@ -3,8 +3,12 @@ package com.auth.controller;
 import static com.auth.util.RegexPattern.validEmailPattern;
 import static com.auth.util.RegexPattern.validPhoneNumberPattern;
 
+import java.time.LocalDate;
+
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth.dto.ChangePasswordDto;
 import com.auth.dto.CustomResponse;
 import com.auth.dto.JwtAuthRequest;
 import com.auth.dto.JwtAuthResponse;
@@ -34,6 +39,9 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api/auth/")
 public class AuthController {
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
 	
 	@Autowired
 	private UserService userService;
@@ -53,6 +61,8 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<CustomResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
 		validEmailPattern(request.getUsername());
+		
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		this.authenticate(request.getUsername(), request.getPassword());
 
@@ -75,6 +85,7 @@ public class AuthController {
 	{
 		validEmailPattern(requestDto.getEmail());
 		validPhoneNumberPattern(requestDto.getMobileNo());
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.verifyOtp(requestDto.getEmail(), requestDto.getOtp());
 		if(response.getStatus().equals(HttpStatus.OK.value()))
 		{
@@ -92,8 +103,10 @@ public class AuthController {
 //	}
 	
 	@PostMapping("/send-otp")
-	public ResponseEntity<CustomResponse> resendOtp(@RequestParam String email) {
-		validEmailPattern(email);
+	public ResponseEntity<?> resendOtp(@RequestParam String email) {
+		if(!validEmailPattern(email))
+			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.sendOtp(email,false);
 		return ResponseEntity.ok(response);
 	}
@@ -101,21 +114,37 @@ public class AuthController {
 	@PostMapping("/forgot-password/send-otp")
 	public ResponseEntity<?> checkEmailForForgotPassword(@RequestParam String email) {
 		
-		validEmailPattern(email);
+		if(!validEmailPattern(email))
+			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.sendOtp(email,true);
 		return ResponseEntity.ok(response);
 	}
 	
 	@ApiOperation(value = "Verify the otp for forgot password")
 	@PostMapping("/forgot-password/verify-otp")
-	public ResponseEntity<?> postMethodName(@RequestParam String email, @RequestParam String otp) {
+	public ResponseEntity<?> forgotPasswordVerifyOtp(@RequestParam(required = true) String email, @RequestParam(required = true) String otp) {
 		
-		validEmailPattern(email);
+		if(!validEmailPattern(email))
+			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
+		if(otp == null || otp.length()<=0)
+			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP can't be blank"));
+			
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.verifyOtp(email, otp);
-		
-		response =new CustomResponse(HttpStatus.OK.value(), null, "Implement in future");
 		return ResponseEntity.ok(response);
 	}
+	
+	@PostMapping("/forgot-password/change-password")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto request) {
+		validEmailPattern(request.getEmail());
+		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		CustomResponse response = userService.changePassword(request);
+		
+		return ResponseEntity.ok(response);
+	}
+	
 	
 	
 	

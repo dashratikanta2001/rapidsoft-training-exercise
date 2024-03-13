@@ -111,7 +111,7 @@ public class OtpServiceImpl implements OtpService {
 		otpEntity.setIsVerified(false);
 		otpEntity.setIsActive(true);
 		otpDao.saveOtp(otpEntity);
-//		sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
+		sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
 		return new CustomResponse(HttpStatus.OK.value(), null, "OTP sent successfully.");
 	}
 

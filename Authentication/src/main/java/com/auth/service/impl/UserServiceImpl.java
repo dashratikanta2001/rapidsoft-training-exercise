@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.auth.dao.UserDao;
+import com.auth.dto.ChangePasswordDto;
 import com.auth.dto.CustomResponse;
 import com.auth.dto.SignupDto;
 import com.auth.entity.User;
@@ -48,6 +49,24 @@ public class UserServiceImpl implements UserService {
 		user = userDao.saveUser(user);		
 		
 		return new CustomResponse(HttpStatus.CREATED.value(), null, "User Created successfully.");
+	}
+
+	@Override
+	public CustomResponse changePassword(ChangePasswordDto request) {
+		User user = userDao.findUserByEmailId(request.getEmail());
+		if(user == null)
+		{
+			return new CustomResponse(HttpStatus.NOT_FOUND.value(), null, "No user found in this mail id.");
+		}
+		if(passwordEncoder.matches(request.getPassword(), user.getPassword()))
+		{
+			return new CustomResponse(HttpStatus.FOUND.value(), null, "New Password can't be same as previous password.");
+		}
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		user.setUpdatedOn(new Date());
+		
+		userDao.saveUser(user);
+		return new CustomResponse(HttpStatus.CREATED.value(), null, "Password changed successfully.");
 	}
 	
 	

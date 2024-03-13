@@ -11,7 +11,7 @@ public class RegexPattern {
 	{
 
 		if (email == null || email.trim().isEmpty()) {
-			return false;
+			throw new ApiException("Email is empty.");
 		}
 		String regex = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}";
 		
@@ -26,7 +26,7 @@ public class RegexPattern {
 	public static boolean validPhoneNumberPattern(String phoneNo)
 	{
 		if (phoneNo == null || phoneNo.trim().isEmpty()) {
-			return true;
+			throw new ApiException("Phone Number is empty.");
 		}
 		
 		if(phoneNo.length()<10)

@@ -37,14 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private Jackson2ObjectMapperBuilder objectMapperBuilder;
 
-	public static final String[] PUBLIC_URLS = {
-			"/api/auth/**",
-			"/v2/api-docs",
-			"/v3/api-docs",
-			"/swagger-resources/**",
-			"/swagger-resources/**",
-			"/webjars/**"
-	};
+//	public static final String[] PUBLIC_URLS = {
+//			"/api/auth/**",
+//			"/v2/api-docs",
+//			"/v3/api-docs",
+//			"/swagger-resources/**",
+//			"/swagger-resources/**",
+//			"/webjars/**"
+//	};
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

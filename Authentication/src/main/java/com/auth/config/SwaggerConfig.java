@@ -50,7 +50,7 @@ public static final String AUTHORIZATION_HEADER="Authorization";
 				.securityContexts(securityContexts())
 				.securitySchemes(Arrays.asList(apiKey()))
 				.select()
-				.apis(RequestHandlerSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage("com"))
 				.paths(PathSelectors.any())
 				.build();
 	}
