@@ -5,6 +5,7 @@ import static com.auth.util.RegexPattern.validPhoneNumberPattern;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import com.auth.dto.JwtAuthRequest;
 import com.auth.dto.JwtAuthResponse;
 import com.auth.dto.SignupDto;
 import com.auth.exception.ApiException;
+import com.auth.exception.LoginApiException;
 import com.auth.security.JwtTokenHelper;
 import com.auth.service.OtpService;
 import com.auth.service.UserService;
@@ -59,7 +61,15 @@ public class AuthController {
 	private OtpService otpService;
 
 	@PostMapping("/login")
-	public ResponseEntity<CustomResponse> createToken(@RequestBody JwtAuthRequest request) throws Exception {
+	public ResponseEntity<CustomResponse> createToken(@Valid @RequestBody JwtAuthRequest request, HttpServletRequest httpRequest) throws Exception {
+//		System.out.println("Ip Address  = "+httpRequest.get);
+
+		if(request != null && request.getUsername()== null || request.getPassword() == null || request.getUsername().length()==0 || request.getPassword().length() == 0)
+		{
+//			return ResponseEntity.ok(new CustomResponse(HttpStatus.UNAUTHORIZED.value(), null, "Invalid Cridentials"));
+			throw new LoginApiException("Invalid Cridentials");
+		}
+		
 		validEmailPattern(request.getUsername());
 		
 		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -89,6 +99,7 @@ public class AuthController {
 		CustomResponse response = otpService.verifyOtp(requestDto.getEmail(), requestDto.getOtp());
 		if(response.getStatus().equals(HttpStatus.OK.value()))
 		{
+			System.out.println("Password = "+requestDto.getPassword());
 			response = userService.saveUser(requestDto);
 		}
 		
@@ -158,7 +169,8 @@ public class AuthController {
 			
 		} catch (BadCredentialsException e) {
 			// TODO: handle exception
-			throw new ApiException("Invalid username: "+username+" or password : "+password);
+//			throw new ApiException("Invalid Cridentials");
+			throw new LoginApiException("Invalid Cridentials");
 		}
 
 	}

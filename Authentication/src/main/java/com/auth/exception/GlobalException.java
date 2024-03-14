@@ -56,6 +56,14 @@ public class GlobalException {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	@ExceptionHandler(LoginApiException.class)
+	public ResponseEntity<CustomResponse> loginApiException(LoginApiException ex)
+	{
+		String message = ex.getMessage();
+		CustomResponse response = new CustomResponse(HttpStatus.UNAUTHORIZED.value(), null, message);
+		return new ResponseEntity(response, HttpStatus.UNAUTHORIZED);
+	}
+	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> NoResourceFoundExceptionHandler(Exception ex)

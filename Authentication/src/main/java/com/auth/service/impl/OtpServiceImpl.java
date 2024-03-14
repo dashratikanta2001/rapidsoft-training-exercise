@@ -111,7 +111,16 @@ public class OtpServiceImpl implements OtpService {
 		otpEntity.setIsVerified(false);
 		otpEntity.setIsActive(true);
 		otpDao.saveOtp(otpEntity);
-		sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
+		System.out.println("Email = "+email+" OTP = "+generatedOTP);
+		
+		Thread emailThread = new Thread(() -> {
+			sendOtpVerificationEmail(email, generatedOTP);
+        });
+        emailThread.start();
+		
+		//sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
+		
+		
 		return new CustomResponse(HttpStatus.OK.value(), null, "OTP sent successfully.");
 	}
 
@@ -125,6 +134,8 @@ public class OtpServiceImpl implements OtpService {
 		String subject = "Email Verification";
 		String body = EmailUtil.otpBody(email, otp);
 
+
+		
 		emailUtil.sendEmail(email, subject, body);
 
 	}
