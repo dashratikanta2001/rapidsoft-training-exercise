@@ -37,43 +37,48 @@ import com.auth.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
 
-
 @RestController
 @RequestMapping("/api/auth/")
 public class AuthController {
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private JwtTokenHelper jwtTokenHelper;
 
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private OtpService otpService;
 
 	@PostMapping("/login")
-	public ResponseEntity<CustomResponse> createToken(@Valid @RequestBody JwtAuthRequest request, HttpServletRequest httpRequest) throws Exception {
+	public ResponseEntity<CustomResponse> createToken(@Valid @RequestBody JwtAuthRequest request,
+			HttpServletRequest httpRequest) throws Exception {
 //		System.out.println("Ip Address  = "+httpRequest.get);
 
-		if(request != null && request.getUsername()== null || request.getPassword() == null || request.getUsername().length()==0 || request.getPassword().length() == 0)
-		{
+		if (request != null && request.getUsername() == null || request.getPassword() == null
+				|| request.getUsername().length() == 0 || request.getPassword().length() == 0) {
 //			return ResponseEntity.ok(new CustomResponse(HttpStatus.UNAUTHORIZED.value(), null, "Invalid Cridentials"));
 			throw new LoginApiException("Invalid Cridentials");
 		}
-		
+
 		validEmailPattern(request.getUsername());
-		
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
-		
+		// Just Experiments start.
+
+		System.out
+				.println("Httpservlet request = " + httpRequest.getRemoteAddr() + " -> " + httpRequest.getRemoteHost());
+
+		// Just Experiments end.
+
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
+
 		this.authenticate(request.getUsername(), request.getPassword());
 
 		UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
@@ -85,80 +90,76 @@ public class AuthController {
 		response.setUsername(userDetails.getUsername());
 		response.setToken(token);
 		CustomResponse customResponse = new CustomResponse(HttpStatus.OK.value(), response, "SUCCESS");
-		
 
 		return ResponseEntity.ok(customResponse);
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<CustomResponse> signup(@Valid @RequestBody SignupDto requestDto)
-	{
+	public ResponseEntity<CustomResponse> signup(@Valid @RequestBody SignupDto requestDto,
+			HttpServletRequest httpRequest) {
 		validEmailPattern(requestDto.getEmail());
 		validPhoneNumberPattern(requestDto.getMobileNo());
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.verifyOtp(requestDto.getEmail(), requestDto.getOtp());
-		if(response.getStatus().equals(HttpStatus.OK.value()))
-		{
-			System.out.println("Password = "+requestDto.getPassword());
+		if (response.getStatus().equals(HttpStatus.OK.value())) {
+			System.out.println("Password = " + requestDto.getPassword());
 			response = userService.saveUser(requestDto);
 		}
-		
+
 		return ResponseEntity.ok(response);
 	}
-	
+
 //	@PostMapping("/verify")
 //	public ResponseEntity<CustomResponse> verifyUser(@RequestParam String email, @RequestParam String otp)
 //	{
 //		CustomResponse response =userService.verifyOtp(email, otp);
 //		return ResponseEntity.ok(response);
 //	}
-	
+
 	@PostMapping("/send-otp")
-	public ResponseEntity<?> resendOtp(@RequestParam String email) {
-		if(!validEmailPattern(email))
+	public ResponseEntity<?> resendOtp(@RequestParam String email, HttpServletRequest httpRequest) {
+		if (!validEmailPattern(email))
 			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
-		CustomResponse response = otpService.sendOtp(email,false);
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
+		CustomResponse response = otpService.sendOtp(email, false);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@PostMapping("/forgot-password/send-otp")
-	public ResponseEntity<?> checkEmailForForgotPassword(@RequestParam String email) {
-		
-		if(!validEmailPattern(email))
+	public ResponseEntity<?> checkEmailForForgotPassword(@RequestParam String email, HttpServletRequest httpRequest) {
+
+		if (!validEmailPattern(email))
 			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
-		CustomResponse response = otpService.sendOtp(email,true);
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
+		CustomResponse response = otpService.sendOtp(email, true);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@ApiOperation(value = "Verify the otp for forgot password")
 	@PostMapping("/forgot-password/verify-otp")
-	public ResponseEntity<?> forgotPasswordVerifyOtp(@RequestParam(required = true) String email, @RequestParam(required = true) String otp) {
-		
-		if(!validEmailPattern(email))
+	public ResponseEntity<?> forgotPasswordVerifyOtp(@RequestParam(required = true) String email,
+			@RequestParam(required = true) String otp, HttpServletRequest httpRequest) {
+
+		if (!validEmailPattern(email))
 			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Email can't be blank"));
-		if(otp == null || otp.length()<=0)
+		if (otp == null || otp.length() <= 0)
 			return ResponseEntity.ok(new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP can't be blank"));
-			
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
+
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
 		CustomResponse response = otpService.verifyOtp(email, otp);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@PostMapping("/forgot-password/change-password")
-	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto request) {
+	public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto request, HttpServletRequest httpRequest) {
 		validEmailPattern(request.getEmail());
-		LOGGER.info("-> "+Thread.currentThread().getStackTrace()[1].getMethodName());
-		
+		LOGGER.info(httpRequest.getRemoteAddr() + "-> " + Thread.currentThread().getStackTrace()[1].getMethodName());
+
 		CustomResponse response = userService.changePassword(request);
-		
+
 		return ResponseEntity.ok(response);
 	}
-	
-	
-	
-	
+
 	private void authenticate(String username, String password) throws Exception {
 		// TODO Auto-generated method stub
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
@@ -166,7 +167,7 @@ public class AuthController {
 
 		try {
 			this.authenticationManager.authenticate(authenticationToken);
-			
+
 		} catch (BadCredentialsException e) {
 			// TODO: handle exception
 //			throw new ApiException("Invalid Cridentials");
@@ -174,6 +175,5 @@ public class AuthController {
 		}
 
 	}
-	
-	
+
 }

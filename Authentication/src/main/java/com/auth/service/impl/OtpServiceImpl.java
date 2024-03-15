@@ -50,9 +50,10 @@ public class OtpServiceImpl implements OtpService {
 			return new CustomResponse(HttpStatus.CONFLICT.value(), null, "Account already exist in this Email id");
 		}
 //		else if(new Date(user.getValidTime()+(10*60*1000)).before(new Date(System.currentTimeMillis())))
-		else if (!user.getCreatedOn().after(new Date(System.currentTimeMillis()-user.getValidTime() *60*1000))) {
+		else if (passwordEncoder.matches(otp, user.getOtp()) && !user.getCreatedOn().after(new Date(System.currentTimeMillis()-user.getValidTime() *60*1000))) {
 //			System.out.println("OTP timer = "+user.getCreatedOn().compareTo(new Date(System.currentTimeMillis()-10*60*1000)));
-			return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP expired.");
+//			return new CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "OTP expired.");
+			return new CustomResponse(HttpStatus.UNAUTHORIZED.value(), null, "OTP expired.");
 		}
 //		else if(!otp.equals(user.getOtp()))
 		else if (!passwordEncoder.matches(otp, user.getOtp())) {
@@ -97,7 +98,8 @@ public class OtpServiceImpl implements OtpService {
 			otpEntity = new Otp();
 		}
 		if(otpEntity!= null && otpEntity.getCreatedOn() != null)
-		{System.out.println("HELOOOOOOOOOOOOOOOOOOOOOO"+otpEntity.getCreatedOn());
+		{
+//			System.out.println("HELOOOOOOOOOOOOOOOOOOOOOO"+otpEntity.getCreatedOn());
 			if (otpEntity.getCreatedOn().after(new Date(System.currentTimeMillis() - (1 * 30 * 1000)))) {
 				throw new ApiException("Please wait for 30 seconds to resend the otp.");
 			}
@@ -113,10 +115,10 @@ public class OtpServiceImpl implements OtpService {
 		otpDao.saveOtp(otpEntity);
 		System.out.println("Email = "+email+" OTP = "+generatedOTP);
 		
-		Thread emailThread = new Thread(() -> {
-			sendOtpVerificationEmail(email, generatedOTP);
-        });
-        emailThread.start();
+//		Thread emailThread = new Thread(() -> {
+			sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
+//        });
+//        emailThread.start();
 		
 		//sendOtpVerificationEmail(otpEntity.getEmail(), generatedOTP);
 		
@@ -134,9 +136,11 @@ public class OtpServiceImpl implements OtpService {
 		String subject = "Email Verification";
 		String body = EmailUtil.otpBody(email, otp);
 
-
-		
-		emailUtil.sendEmail(email, subject, body);
+		Thread emailThread = new Thread(() -> {
+			emailUtil.sendEmail(email, subject, body);
+			
+		});
+		emailThread.start();
 
 	}
 

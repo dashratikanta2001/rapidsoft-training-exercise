@@ -1,6 +1,8 @@
 package com.auth.config;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
+	
+	private Set<String> blockedIPs;
 
 	@Value("${cors.allow.domain:*}")
 	private String origin;
@@ -43,6 +47,7 @@ public class CorsFilter implements Filter {
 		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
+			
 			chain.doFilter(req, res);
 		}
 
@@ -52,6 +57,8 @@ public class CorsFilter implements Filter {
 	}
 
 	public void init(FilterConfig filterConfig) {
+		blockedIPs = new HashSet<>();
+		blockedIPs.add("192.168.12.60");
 
 	}
 

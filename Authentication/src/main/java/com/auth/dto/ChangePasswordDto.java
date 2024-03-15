@@ -1,8 +1,12 @@
 package com.auth.dto;
 
+import javax.validation.constraints.Size;
+
 public class ChangePasswordDto {
 
 	private String email;
+	
+	@Size(min = 8, max = 16)
 	private String password;
 	public String getEmail() {
 		return email;
