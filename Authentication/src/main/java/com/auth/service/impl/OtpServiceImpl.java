@@ -105,7 +105,8 @@ public class OtpServiceImpl implements OtpService {
 			}
 		}
 
-		String generatedOTP = generateOTP();System.out.println("OTP = "+generatedOTP);
+		String generatedOTP = generateOTP();
+		System.out.println("OTP = "+generatedOTP);
 		otpEntity.setOtp(passwordEncoder.encode(generatedOTP));
 		otpEntity.setEmail(email);
 		otpEntity.setCreatedOn(new Date());
