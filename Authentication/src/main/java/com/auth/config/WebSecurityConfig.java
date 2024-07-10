@@ -56,7 +56,7 @@ public class WebSecurityConfig {
 		.authenticated()
 		.and()
 		.exceptionHandling()
-		.authenticationEntryPoint(this.jwtAuthenticationEntryPoint)
+		.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 		.and()
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
