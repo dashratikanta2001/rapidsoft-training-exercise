@@ -10,11 +10,15 @@ import com.test.Dto.CountryDto;
 import com.test.Dto.StateDto;
 import com.test.Dto.TestDto;
 import com.test.Dto.UserDto;
+import com.test.util.ExcelGanttChaerExportV2;
+import com.test.util.ExcelGanttChartExport;
 import com.test.util.ExcelOperation;
 import com.test.util.ExcelOperation2;
 import com.test.util.ExcelOperationImpl;
 import com.test.util.ExcelTest;
 import com.test.util.FormatingCellColor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/excel")
@@ -86,5 +90,20 @@ public class ExcelControllerV4 {
 	public ResponseEntity<?> readExcelCellToHashMap1() throws Exception {
 		return ResponseEntity.ok(excelTest.timeSheet());
 	}
+	
+	@GetMapping("/template")
+	public ResponseEntity<?> exportTemplate() {
+		return ExcelGanttChaerExportV2.setLineInExcel();
+//		return ResponseEntity.ok("Success");
+	}
+	
+	@GetMapping("/abc")
+	public ResponseEntity<?> getMethodName() {
+		
+		ExcelGanttChaerExportV2.generateExcel();
+		return ResponseEntity.ok("HELLO");
+	}
+	
+	
 
 }
